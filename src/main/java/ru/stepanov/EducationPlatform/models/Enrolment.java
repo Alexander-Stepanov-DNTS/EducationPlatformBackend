@@ -30,7 +30,7 @@ public class Enrolment {
     @Column(nullable = false)
     private LocalDateTime enrolmentDatetime;
 
-    @Column(nullable = true)
+    @Column()
     private LocalDateTime completedDatetime;
 
     @Column(nullable = false)

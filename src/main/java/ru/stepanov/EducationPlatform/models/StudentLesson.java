@@ -27,6 +27,6 @@ public class StudentLesson {
     @JoinColumn(name = "lesson_id", referencedColumnName = "id")
     private Lesson lesson;
 
-    @Column(nullable = true)
+    @Column()
     private LocalDateTime completedDatetime;
 }
