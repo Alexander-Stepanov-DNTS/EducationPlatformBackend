@@ -3,10 +3,13 @@ package ru.stepanov.EducationPlatform.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.stepanov.EducationPlatform.DTO.CourseDto;
 import ru.stepanov.EducationPlatform.DTO.DirectionDto;
 import ru.stepanov.EducationPlatform.services.DirectionService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/directions")
@@ -26,6 +29,14 @@ public class DirectionController {
         List<DirectionDto> directions = directionService.getAllDirections();
         return ResponseEntity.ok(directions);
     }
+
+//    @GetMapping
+//    public ResponseEntity<Map<String, List<DirectionDto>>> getAllDirections() {
+//        List<DirectionDto> directions = directionService.getAllDirections();
+//        Map<String, List<DirectionDto>> response = new HashMap<>();
+//        response.put("directions", directions);
+//        return ResponseEntity.ok(response);
+//    }
 
     @PostMapping
     public ResponseEntity<DirectionDto> createDirection(@RequestBody DirectionDto directionDto) {

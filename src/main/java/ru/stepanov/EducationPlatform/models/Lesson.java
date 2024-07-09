@@ -30,7 +30,7 @@ public class Lesson {
     private Integer courseOrder;
 
     @ManyToOne
-    @JoinColumn(name = "course_id", referencedColumnName = "id",nullable = false)
+    @JoinColumn(name = "course_id", referencedColumnName = "id", nullable = false)
     private Course course;
 
     @OneToMany(mappedBy = "lesson")

@@ -8,9 +8,12 @@ import ru.stepanov.EducationPlatform.mappers.CourseMapper;
 import ru.stepanov.EducationPlatform.mappers.ReviewMapper;
 import ru.stepanov.EducationPlatform.mappers.UserMapper;
 import ru.stepanov.EducationPlatform.models.Review;
+import ru.stepanov.EducationPlatform.models.User;
 import ru.stepanov.EducationPlatform.repositories.ReviewRepository;
+import ru.stepanov.EducationPlatform.repositories.UserRepository;
 import ru.stepanov.EducationPlatform.services.ReviewService;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -21,11 +24,22 @@ public class ReviewServiceImpl implements ReviewService {
     @Autowired
     private ReviewRepository reviewRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     @Transactional(readOnly = true)
     public ReviewDto getReviewById(Long id) {
         Optional<Review> review = reviewRepository.findById(id);
         return review.map(ReviewMapper.INSTANCE::toDto).orElse(null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<ReviewDto> getAllReviewsByCourse(Long id) {
+        return reviewRepository.findByCourseId(id).stream()
+                .map(ReviewMapper.INSTANCE::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -40,6 +54,7 @@ public class ReviewServiceImpl implements ReviewService {
     @Transactional
     public ReviewDto createReview(ReviewDto reviewDto) {
         Review review = ReviewMapper.INSTANCE.toEntity(reviewDto);
+        review.setCreatedDate(LocalDateTime.now());
         review = reviewRepository.save(review);
         return ReviewMapper.INSTANCE.toDto(review);
     }

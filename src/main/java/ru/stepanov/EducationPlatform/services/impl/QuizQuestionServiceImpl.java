@@ -3,10 +3,14 @@ package ru.stepanov.EducationPlatform.services.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.stepanov.EducationPlatform.DTO.QuizAnswerDto;
 import ru.stepanov.EducationPlatform.DTO.QuizQuestionDto;
+import ru.stepanov.EducationPlatform.mappers.QuizAnswerMapper;
 import ru.stepanov.EducationPlatform.mappers.QuizMapper;
 import ru.stepanov.EducationPlatform.mappers.QuizQuestionMapper;
+import ru.stepanov.EducationPlatform.models.QuizAnswer;
 import ru.stepanov.EducationPlatform.models.QuizQuestion;
+import ru.stepanov.EducationPlatform.repositories.QuizAnswerRepository;
 import ru.stepanov.EducationPlatform.repositories.QuizQuestionRepository;
 import ru.stepanov.EducationPlatform.services.QuizQuestionService;
 
@@ -19,6 +23,9 @@ public class QuizQuestionServiceImpl implements QuizQuestionService {
 
     @Autowired
     private QuizQuestionRepository quizQuestionRepository;
+
+    @Autowired
+    private QuizAnswerRepository quizAnswerRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -63,5 +70,14 @@ public class QuizQuestionServiceImpl implements QuizQuestionService {
     @Transactional
     public void deleteQuizQuestion(Long id) {
         quizQuestionRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public List<QuizAnswerDto> getQuestionAnswers(Long questionId){
+        List<QuizAnswer> answers = quizAnswerRepository.findByQuestion_Id(questionId);
+        return answers.stream()
+                .map(QuizAnswerMapper.INSTANCE::toDto)
+                .collect(Collectors.toList());
     }
 }

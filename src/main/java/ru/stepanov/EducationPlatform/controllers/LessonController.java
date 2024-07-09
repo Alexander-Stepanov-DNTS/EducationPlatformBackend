@@ -10,6 +10,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/lessons")
+@CrossOrigin(origins = "http://localhost:5173")
 public class LessonController {
 
     @Autowired
@@ -44,4 +45,11 @@ public class LessonController {
         lessonService.deleteLesson(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/course/{id}")
+    public ResponseEntity<List<LessonDto>> getLessonsFromCourse(@PathVariable Long id){
+        List<LessonDto> lessons = lessonService.getLessonsFromCourse(id);
+        return ResponseEntity.ok(lessons);
+    }
+
 }

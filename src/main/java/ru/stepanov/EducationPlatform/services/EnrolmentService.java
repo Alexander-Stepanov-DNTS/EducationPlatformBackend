@@ -10,4 +10,5 @@ public interface EnrolmentService {
     EnrolmentDto createEnrolment(EnrolmentDto enrolmentDto);
     EnrolmentDto updateEnrolment(Long courseId, Long studentId, EnrolmentDto enrolmentDto);
     void deleteEnrolment(Long courseId, Long studentId);
+    boolean isEnrolled(Long courseId, Long studentId);
 }

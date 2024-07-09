@@ -3,10 +3,16 @@ package ru.stepanov.EducationPlatform.services.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.stepanov.EducationPlatform.DTO.LessonDto;
 import ru.stepanov.EducationPlatform.DTO.QuizDto;
+import ru.stepanov.EducationPlatform.DTO.QuizQuestionDto;
 import ru.stepanov.EducationPlatform.mappers.CourseMapper;
+import ru.stepanov.EducationPlatform.mappers.LessonMapper;
 import ru.stepanov.EducationPlatform.mappers.QuizMapper;
+import ru.stepanov.EducationPlatform.mappers.QuizQuestionMapper;
 import ru.stepanov.EducationPlatform.models.Quiz;
+import ru.stepanov.EducationPlatform.models.QuizQuestion;
+import ru.stepanov.EducationPlatform.repositories.QuizQuestionRepository;
 import ru.stepanov.EducationPlatform.repositories.QuizRepository;
 import ru.stepanov.EducationPlatform.services.QuizService;
 
@@ -20,11 +26,22 @@ public class QuizServiceImpl implements QuizService {
     @Autowired
     private QuizRepository quizRepository;
 
+    @Autowired
+    private QuizQuestionRepository quizQuestionRepository;
+
     @Override
     @Transactional(readOnly = true)
     public QuizDto getQuizById(Long id) {
         Optional<Quiz> quiz = quizRepository.findById(id);
         return quiz.map(QuizMapper.INSTANCE::toDto).orElse(null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<QuizDto> getQuizzesFromCourse(Long id) {
+        return quizRepository.findByCourseId(id).stream()
+                .map(QuizMapper.INSTANCE::toDto)
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -69,4 +86,13 @@ public class QuizServiceImpl implements QuizService {
     public void deleteQuiz(Long id) {
         quizRepository.deleteById(id);
     }
+
+    @Override
+    public List<QuizQuestionDto> getQuizQuestions(Long quizId) {
+        List<QuizQuestion> questions = quizQuestionRepository.findByQuizId(quizId);
+        return questions.stream()
+                .map(QuizQuestionMapper.INSTANCE::toDto)
+                .collect(Collectors.toList());
+    }
+
 }

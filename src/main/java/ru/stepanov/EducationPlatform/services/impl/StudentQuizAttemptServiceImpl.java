@@ -8,8 +8,12 @@ import ru.stepanov.EducationPlatform.mappers.QuizMapper;
 import ru.stepanov.EducationPlatform.mappers.StudentQuizAttemptMapper;
 import ru.stepanov.EducationPlatform.mappers.UserMapper;
 import ru.stepanov.EducationPlatform.models.EmbeddedId.StudentQuizAttemptId;
+import ru.stepanov.EducationPlatform.models.Quiz;
 import ru.stepanov.EducationPlatform.models.StudentQuizAttempt;
+import ru.stepanov.EducationPlatform.models.User;
+import ru.stepanov.EducationPlatform.repositories.QuizRepository;
 import ru.stepanov.EducationPlatform.repositories.StudentQuizAttemptRepository;
+import ru.stepanov.EducationPlatform.repositories.UserRepository;
 import ru.stepanov.EducationPlatform.services.StudentQuizAttemptService;
 
 import java.time.LocalDateTime;
@@ -22,6 +26,10 @@ public class StudentQuizAttemptServiceImpl implements StudentQuizAttemptService 
 
     @Autowired
     private StudentQuizAttemptRepository studentQuizAttemptRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    public QuizRepository quizRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -42,9 +50,24 @@ public class StudentQuizAttemptServiceImpl implements StudentQuizAttemptService 
     @Override
     @Transactional
     public StudentQuizAttemptDto createStudentQuizAttempt(StudentQuizAttemptDto studentQuizAttemptDto) {
-        StudentQuizAttempt studentQuizAttempt = StudentQuizAttemptMapper.INSTANCE.toEntity(studentQuizAttemptDto);
-        studentQuizAttempt = studentQuizAttemptRepository.save(studentQuizAttempt);
-        return StudentQuizAttemptMapper.INSTANCE.toDto(studentQuizAttempt);
+        System.out.println(studentQuizAttemptDto);
+        StudentQuizAttempt attempt = new StudentQuizAttempt();
+
+        User user = userRepository.findById(studentQuizAttemptDto.getStudent().getId())
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        Quiz quiz = quizRepository.findById(studentQuizAttemptDto.getQuiz().getId())
+                .orElseThrow(() -> new RuntimeException("Quiz not found"));
+
+        attempt.setStudent(user);
+        attempt.setQuiz(quiz);
+        LocalDateTime data = LocalDateTime.now();
+        attempt.setAttemptDatetime(data);
+        attempt.setId(new StudentQuizAttemptId(user.getId(), quiz.getId(), data));
+        attempt.setScoreAchieved(studentQuizAttemptDto.getScoreAchieved());
+
+        attempt = studentQuizAttemptRepository.save(attempt);
+
+        return StudentQuizAttemptMapper.INSTANCE.toDto(attempt);
     }
 
     @Override

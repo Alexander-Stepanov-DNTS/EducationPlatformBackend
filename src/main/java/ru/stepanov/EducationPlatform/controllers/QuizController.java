@@ -3,7 +3,9 @@ package ru.stepanov.EducationPlatform.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.stepanov.EducationPlatform.DTO.LessonDto;
 import ru.stepanov.EducationPlatform.DTO.QuizDto;
+import ru.stepanov.EducationPlatform.DTO.QuizQuestionDto;
 import ru.stepanov.EducationPlatform.services.QuizService;
 
 import java.util.List;
@@ -44,4 +46,22 @@ public class QuizController {
         quizService.deleteQuiz(id);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/course/{id}")
+    public ResponseEntity<List<QuizDto>> getLessonsFromCourse(@PathVariable Long id){
+        List<QuizDto> quizzes = quizService.getQuizzesFromCourse(id);
+        return ResponseEntity.ok(quizzes);
+    }
+
+    @GetMapping("/{quizId}/questions")
+    public ResponseEntity<List<QuizQuestionDto>> getQuizQuestions(@PathVariable Long quizId) {
+        List<QuizQuestionDto> questions = quizService.getQuizQuestions(quizId);
+        return ResponseEntity.ok(questions);
+    }
+
+//    @PostMapping("/{quizId}/submit")
+//    public ResponseEntity<Void> submitQuiz(@PathVariable Long quizId, @RequestBody QuizSubmissionDto submission) {
+//        quizService.submitQuiz(quizId, submission);
+//        return ResponseEntity.ok().build();
+//    }
 }

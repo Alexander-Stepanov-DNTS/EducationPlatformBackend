@@ -36,6 +36,14 @@ public class LessonServiceImpl implements LessonService {
     }
 
     @Override
+    @Transactional(readOnly = true)
+    public List<LessonDto> getLessonsFromCourse(Long id) {
+        return lessonRepository.findByCourseId(id).stream()
+                .map(LessonMapper.INSTANCE::toDto)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     @Transactional
     public LessonDto createLesson(LessonDto lessonDto) {
         Lesson lesson = LessonMapper.INSTANCE.toEntity(lessonDto);

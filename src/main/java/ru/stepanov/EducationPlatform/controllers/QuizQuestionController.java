@@ -3,6 +3,7 @@ package ru.stepanov.EducationPlatform.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.stepanov.EducationPlatform.DTO.QuizAnswerDto;
 import ru.stepanov.EducationPlatform.DTO.QuizQuestionDto;
 import ru.stepanov.EducationPlatform.services.QuizQuestionService;
 
@@ -43,5 +44,11 @@ public class QuizQuestionController {
     public ResponseEntity<Void> deleteQuizQuestion(@PathVariable Long id) {
         quizQuestionService.deleteQuizQuestion(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/{questionId}/answers")
+    public ResponseEntity<List<QuizAnswerDto>> getQuestionAnswers(@PathVariable Long questionId) {
+        List<QuizAnswerDto> answers = quizQuestionService.getQuestionAnswers(questionId);
+        return ResponseEntity.ok(answers);
     }
 }

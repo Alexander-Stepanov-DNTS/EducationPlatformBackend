@@ -6,7 +6,9 @@ import org.springframework.web.bind.annotation.*;
 import ru.stepanov.EducationPlatform.DTO.CourseDto;
 import ru.stepanov.EducationPlatform.services.CourseService;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/courses")
@@ -21,10 +23,18 @@ public class CourseController {
         return ResponseEntity.ok(course);
     }
 
+//    @GetMapping
+//    public ResponseEntity<List<CourseDto>> getAllCourses() {
+//        List<CourseDto> courses = courseService.getAllCourses();
+//        return ResponseEntity.ok(courses);
+//    }
+
     @GetMapping
-    public ResponseEntity<List<CourseDto>> getAllCourses() {
+    public ResponseEntity<Map<String, List<CourseDto>>> getAllCourses() {
         List<CourseDto> courses = courseService.getAllCourses();
-        return ResponseEntity.ok(courses);
+        Map<String, List<CourseDto>> response = new HashMap<>();
+        response.put("courses", courses);
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping

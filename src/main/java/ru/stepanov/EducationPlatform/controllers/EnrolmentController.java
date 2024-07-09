@@ -44,4 +44,10 @@ public class EnrolmentController {
         enrolmentService.deleteEnrolment(courseId, studentId);
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/isEnrolled")
+    public ResponseEntity<Boolean> isEnrolled(@RequestParam Long courseId, @RequestParam Long studentId) {
+        boolean isEnrolled = enrolmentService.isEnrolled(courseId, studentId);
+        return ResponseEntity.ok(isEnrolled);
+    }
 }
