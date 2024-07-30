@@ -24,12 +24,16 @@ import java.util.stream.Collectors;
 @Service
 public class StudentQuizAttemptServiceImpl implements StudentQuizAttemptService {
 
+    private final StudentQuizAttemptRepository studentQuizAttemptRepository;
+    private final UserRepository userRepository;
+    public final QuizRepository quizRepository;
+
     @Autowired
-    private StudentQuizAttemptRepository studentQuizAttemptRepository;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    public QuizRepository quizRepository;
+    public StudentQuizAttemptServiceImpl(StudentQuizAttemptRepository studentQuizAttemptRepository, UserRepository userRepository, QuizRepository quizRepository) {
+        this.studentQuizAttemptRepository = studentQuizAttemptRepository;
+        this.userRepository = userRepository;
+        this.quizRepository = quizRepository;
+    }
 
     @Override
     @Transactional(readOnly = true)

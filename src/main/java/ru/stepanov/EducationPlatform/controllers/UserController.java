@@ -3,6 +3,7 @@ package ru.stepanov.EducationPlatform.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.stepanov.EducationPlatform.DTO.CourseDto;
 import ru.stepanov.EducationPlatform.DTO.UserDto;
 import ru.stepanov.EducationPlatform.services.UserService;
 
@@ -19,6 +20,12 @@ public class UserController {
     public ResponseEntity<UserDto> getUserById(@PathVariable Long id) {
         UserDto user = userService.getUserById(id);
         return ResponseEntity.ok(user);
+    }
+
+    @GetMapping("/{id}/courses")
+    public ResponseEntity<List<CourseDto>> getCoursesByUserId(@PathVariable Long id) {
+        List<CourseDto> courses = userService.getCoursesByUserId(id);
+        return ResponseEntity.ok(courses);
     }
 
     @GetMapping

@@ -31,6 +31,9 @@ public class JwtTokenUtil {
 
     public String generateToken(MyUserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
+        claims.put("id", userDetails.getUserId());
+        claims.put("role", userDetails.getUserRole());
+        claims.put("login", userDetails.getLogin());
         return doGenerateToken(claims, userDetails.getUsername());
     }
 
@@ -60,6 +63,21 @@ public class JwtTokenUtil {
     public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
+    }
+
+    public Integer getUserIdFromToken(String token) {
+        Claims claims = getAllClaimsFromToken(token);
+        return claims.get("id", Integer.class);
+    }
+
+    public String getUserRoleFromToken(String token) {
+        Claims claims = getAllClaimsFromToken(token);
+        return claims.get("role", String.class);
+    }
+
+    public String getUserLoginFromToken(String token) {
+        Claims claims = getAllClaimsFromToken(token);
+        return claims.get("login", String.class);
     }
 
     private Claims getAllClaimsFromToken(String token) {

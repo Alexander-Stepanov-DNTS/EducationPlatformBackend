@@ -26,4 +26,3 @@ public class Institution {
     @OneToMany(mappedBy = "institution")
     private List<User> users;
 }
-

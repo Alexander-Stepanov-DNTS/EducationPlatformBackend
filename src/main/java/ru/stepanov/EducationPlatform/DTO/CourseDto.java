@@ -9,6 +9,7 @@ public class CourseDto {
     private String description;
     private Long price;
     private Boolean isProgressLimited;
+    private String picture_url;
     private CategoryDto category;
 }
 

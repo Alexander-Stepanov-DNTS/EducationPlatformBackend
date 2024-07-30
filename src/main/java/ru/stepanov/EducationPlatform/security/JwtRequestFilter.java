@@ -3,7 +3,6 @@ package ru.stepanov.EducationPlatform.security;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -15,31 +14,30 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Arrays;
 
 @Component
 public class JwtRequestFilter extends OncePerRequestFilter {
 
-    @Autowired
-    private MyUserDetailsService myUserDetailsService;
+    private final MyUserDetailsService myUserDetailsService;
+
+    private final JwtTokenUtil jwtTokenUtil;
 
     @Autowired
-    private JwtTokenUtil jwtTokenUtil;
+    public JwtRequestFilter(MyUserDetailsService myUserDetailsService, JwtTokenUtil jwtTokenUtil) {
+        this.myUserDetailsService = myUserDetailsService;
+        this.jwtTokenUtil = jwtTokenUtil;
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
-        System.out.println("DOING FILTER!!!");
         String jwtToken = null;
         String username = null;
 
-        System.out.println(Arrays.toString(request.getCookies()));
-        // Извлечение JWT из cookie
         if (request.getCookies() != null) {
             for (Cookie cookie : request.getCookies()) {
                 if (cookie.getName().equals("jwt")) {
                     jwtToken = cookie.getValue();
-                    System.out.println(jwtToken);
                     try {
                         username = jwtTokenUtil.getUsernameFromToken(jwtToken);
                     } catch (IllegalArgumentException e) {
@@ -63,6 +61,10 @@ public class JwtRequestFilter extends OncePerRequestFilter {
                 usernamePasswordAuthenticationToken
                         .setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(usernamePasswordAuthenticationToken);
+
+                request.setAttribute("id", jwtTokenUtil.getUserIdFromToken(jwtToken));
+                request.setAttribute("login", jwtTokenUtil.getUserLoginFromToken(jwtToken));
+                request.setAttribute("role", jwtTokenUtil.getUserRoleFromToken(jwtToken));
             }
         }
         filterChain.doFilter(request, response);

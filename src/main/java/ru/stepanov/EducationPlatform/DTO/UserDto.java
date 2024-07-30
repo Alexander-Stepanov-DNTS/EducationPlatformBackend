@@ -10,6 +10,7 @@ public class UserDto {
     private String emailAddress;
     private String password;
     private LocalDate signupDate;
+    private String login;
     private RoleDto role;
     private InstitutionDto institution;
 }

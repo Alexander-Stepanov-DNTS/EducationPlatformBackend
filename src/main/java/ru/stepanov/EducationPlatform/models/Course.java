@@ -29,6 +29,9 @@ public class Course {
     @Column(nullable = false)
     private Boolean isProgressLimited;
 
+    @Column(nullable = false)
+    private String picture_url;
+
     @ManyToOne
     @JoinColumn(name = "category_id", referencedColumnName = "id", nullable = false)
     private Category category;
@@ -41,5 +44,4 @@ public class Course {
 
     @OneToMany(mappedBy = "course")
     private List<Lesson> lessons;
-
 }

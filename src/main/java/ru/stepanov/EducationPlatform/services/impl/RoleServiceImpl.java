@@ -26,6 +26,11 @@ public class RoleServiceImpl implements RoleService {
         return role.map(RoleMapper.INSTANCE::toDto).orElse(null);
     }
 
+    public RoleDto getRoleByName(String roleName) {
+        Optional<Role> role = roleRepository.findByName(roleName);
+        return role.map(RoleMapper.INSTANCE::toDto).orElse(null);
+    }
+
     @Override
     @Transactional(readOnly = true)
     public List<RoleDto> getAllRoles() {

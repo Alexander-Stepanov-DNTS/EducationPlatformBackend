@@ -23,12 +23,6 @@ public class CourseController {
         return ResponseEntity.ok(course);
     }
 
-//    @GetMapping
-//    public ResponseEntity<List<CourseDto>> getAllCourses() {
-//        List<CourseDto> courses = courseService.getAllCourses();
-//        return ResponseEntity.ok(courses);
-//    }
-
     @GetMapping
     public ResponseEntity<Map<String, List<CourseDto>>> getAllCourses() {
         List<CourseDto> courses = courseService.getAllCourses();

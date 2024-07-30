@@ -48,5 +48,15 @@ public class MyUserDetails implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
+
+    public String getLogin() { return user.getLogin(); }
+
+    public Long getUserId() {
+        return user.getId();
+    }
+
+    public String getUserRole() {
+        return user.getRole().getName();
+    }
 }
 

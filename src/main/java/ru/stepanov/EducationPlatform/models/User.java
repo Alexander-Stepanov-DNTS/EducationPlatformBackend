@@ -27,6 +27,9 @@ public class User {
     @Column(nullable = false)
     private LocalDate signupDate;
 
+    @Column(nullable = false)
+    private String login;
+
     @ManyToOne
     @JoinColumn(name = "role_id", referencedColumnName = "id",nullable = false)
     private Role role;
@@ -46,4 +49,7 @@ public class User {
 
     @OneToMany(mappedBy = "student")
     private List<StudentQuizAttempt> studentQuizAttempts;
+
+    @OneToMany(mappedBy = "student")
+    private List<UserAchievement> userAchievements;
 }

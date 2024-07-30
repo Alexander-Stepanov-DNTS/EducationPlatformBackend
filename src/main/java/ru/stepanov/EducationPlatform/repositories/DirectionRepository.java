@@ -6,4 +6,3 @@ import ru.stepanov.EducationPlatform.models.Direction;
 @Repository
 public interface DirectionRepository extends JpaRepository<Direction, Long> {
 }
-

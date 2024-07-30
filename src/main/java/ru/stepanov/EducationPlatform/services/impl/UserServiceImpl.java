@@ -3,14 +3,17 @@ package ru.stepanov.EducationPlatform.services.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.stepanov.EducationPlatform.DTO.CourseDto;
 import ru.stepanov.EducationPlatform.DTO.UserDto;
-import ru.stepanov.EducationPlatform.mappers.InstitutionMapper;
-import ru.stepanov.EducationPlatform.mappers.RoleMapper;
-import ru.stepanov.EducationPlatform.mappers.UserMapper;
+import ru.stepanov.EducationPlatform.mappers.*;
+import ru.stepanov.EducationPlatform.models.Course;
+import ru.stepanov.EducationPlatform.models.Enrolment;
 import ru.stepanov.EducationPlatform.models.User;
 import ru.stepanov.EducationPlatform.repositories.UserRepository;
+import ru.stepanov.EducationPlatform.repositories.EnrolmentRepository;
 import ru.stepanov.EducationPlatform.services.UserService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -20,6 +23,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private EnrolmentRepository enrolmentRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -66,6 +72,20 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
+    }
+
+    @Override
+    public List<CourseDto> getCoursesByUserId(Long id) {
+        List<Enrolment> enrollments = enrolmentRepository.findByStudentId(id);
+
+        List<Course> courses = new ArrayList<>();
+        for (Enrolment enrollment : enrollments) {
+            courses.add(enrollment.getCourse());
+        }
+
+        return courses.stream()
+                .map(CourseMapper.INSTANCE::toDto)
+                .collect(Collectors.toList());
     }
 }
 

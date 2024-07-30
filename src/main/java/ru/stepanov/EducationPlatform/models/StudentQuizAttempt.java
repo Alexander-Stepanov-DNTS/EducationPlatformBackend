@@ -27,7 +27,6 @@ public class StudentQuizAttempt {
     @JoinColumn(name = "quiz_id", referencedColumnName = "id")
     private Quiz quiz;
 
-    //@MapsId("attemptDatetime")
     @Column(nullable = false, insertable = false, updatable = false)
     private LocalDateTime attemptDatetime;
 
