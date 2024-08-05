@@ -17,8 +17,12 @@ import java.util.stream.Collectors;
 @Service
 public class CourseServiceImpl implements CourseService {
 
+    private final CourseRepository courseRepository;
+
     @Autowired
-    private CourseRepository courseRepository;
+    public CourseServiceImpl(CourseRepository courseRepository) {
+        this.courseRepository = courseRepository;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -53,6 +57,7 @@ public class CourseServiceImpl implements CourseService {
             course.setDescription(courseDto.getDescription());
             course.setPrice(courseDto.getPrice());
             course.setIsProgressLimited(courseDto.getIsProgressLimited());
+            course.setPicture_url(courseDto.getPicture_url());
             course.setCategory(CategoryMapper.INSTANCE.toEntity(courseDto.getCategory()));
             course = courseRepository.save(course);
             return CourseMapper.INSTANCE.toDto(course);

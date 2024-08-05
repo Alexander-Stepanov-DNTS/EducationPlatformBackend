@@ -5,13 +5,19 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.stepanov.EducationPlatform.DTO.CourseDto;
 import ru.stepanov.EducationPlatform.DTO.UserDto;
-import ru.stepanov.EducationPlatform.mappers.*;
+import ru.stepanov.EducationPlatform.mappers.CourseMapper;
+import ru.stepanov.EducationPlatform.mappers.UserMapper;
 import ru.stepanov.EducationPlatform.models.Course;
 import ru.stepanov.EducationPlatform.models.Enrolment;
+import ru.stepanov.EducationPlatform.models.Institution;
+import ru.stepanov.EducationPlatform.models.Role;
 import ru.stepanov.EducationPlatform.models.User;
+import ru.stepanov.EducationPlatform.repositories.InstitutionRepository;
+import ru.stepanov.EducationPlatform.repositories.RoleRepository;
 import ru.stepanov.EducationPlatform.repositories.UserRepository;
 import ru.stepanov.EducationPlatform.repositories.EnrolmentRepository;
 import ru.stepanov.EducationPlatform.services.UserService;
+import ru.stepanov.EducationPlatform.exeptions.ResourceNotFoundException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,11 +27,21 @@ import java.util.stream.Collectors;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
+
+    private final EnrolmentRepository enrolmentRepository;
+
+    private final RoleRepository roleRepository;
+
+    private final InstitutionRepository institutionRepository;
 
     @Autowired
-    private EnrolmentRepository enrolmentRepository;
+    public UserServiceImpl(UserRepository userRepository, EnrolmentRepository enrolmentRepository, RoleRepository roleRepository, InstitutionRepository institutionRepository) {
+        this.userRepository = userRepository;
+        this.enrolmentRepository = enrolmentRepository;
+        this.roleRepository = roleRepository;
+        this.institutionRepository = institutionRepository;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -53,19 +69,22 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public UserDto updateUser(Long id, UserDto userDto) {
-        Optional<User> existingUser = userRepository.findById(id);
-        if (existingUser.isPresent()) {
-            User user = existingUser.get();
-            user.setEmailAddress(userDto.getEmailAddress());
-            user.setPassword(userDto.getPassword());
-            user.setSignupDate(userDto.getSignupDate());
-            user.setRole(RoleMapper.INSTANCE.toEntity(userDto.getRole()));
-            user.setInstitution(InstitutionMapper.INSTANCE.toEntity(userDto.getInstitution()));
-            user = userRepository.save(user);
-            return UserMapper.INSTANCE.toDto(user);
-        } else {
-            return null; // или выбросить исключение
-        }
+        User user = userRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("User not found"));
+        user.setEmailAddress(userDto.getEmailAddress());
+        user.setPassword(userDto.getPassword());
+        user.setSignupDate(userDto.getSignupDate());
+        user.setLogin(userDto.getLogin());
+
+        Role role = roleRepository.findById(userDto.getRole().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Role not found"));
+        user.setRole(role);
+
+        Institution institution = institutionRepository.findById(userDto.getInstitution().getId())
+                .orElseThrow(() -> new ResourceNotFoundException("Institution not found"));
+        user.setInstitution(institution);
+
+        user = userRepository.save(user);
+        return UserMapper.INSTANCE.toDto(user);
     }
 
     @Override
@@ -88,4 +107,3 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
     }
 }
-

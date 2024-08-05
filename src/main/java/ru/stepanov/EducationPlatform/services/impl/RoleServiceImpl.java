@@ -16,8 +16,12 @@ import java.util.stream.Collectors;
 @Service
 public class RoleServiceImpl implements RoleService {
 
+    private final RoleRepository roleRepository;
+
     @Autowired
-    private RoleRepository roleRepository;
+    public RoleServiceImpl(RoleRepository roleRepository) {
+        this.roleRepository = roleRepository;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -67,4 +71,3 @@ public class RoleServiceImpl implements RoleService {
         roleRepository.deleteById(id);
     }
 }
-

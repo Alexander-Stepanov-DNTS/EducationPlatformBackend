@@ -10,4 +10,3 @@ public class UserAchievementDto {
     private AchievementDto achievement;
     private LocalDate dateAchieved;
 }
-

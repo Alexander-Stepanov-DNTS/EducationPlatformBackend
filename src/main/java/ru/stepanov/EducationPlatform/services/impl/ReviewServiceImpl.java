@@ -8,9 +8,7 @@ import ru.stepanov.EducationPlatform.mappers.CourseMapper;
 import ru.stepanov.EducationPlatform.mappers.ReviewMapper;
 import ru.stepanov.EducationPlatform.mappers.UserMapper;
 import ru.stepanov.EducationPlatform.models.Review;
-import ru.stepanov.EducationPlatform.models.User;
 import ru.stepanov.EducationPlatform.repositories.ReviewRepository;
-import ru.stepanov.EducationPlatform.repositories.UserRepository;
 import ru.stepanov.EducationPlatform.services.ReviewService;
 
 import java.time.LocalDateTime;
@@ -21,11 +19,12 @@ import java.util.stream.Collectors;
 @Service
 public class ReviewServiceImpl implements ReviewService {
 
-    @Autowired
-    private ReviewRepository reviewRepository;
+    private final ReviewRepository reviewRepository;
 
     @Autowired
-    private UserRepository userRepository;
+    public ReviewServiceImpl(ReviewRepository reviewRepository) {
+        this.reviewRepository = reviewRepository;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -83,4 +82,3 @@ public class ReviewServiceImpl implements ReviewService {
         reviewRepository.deleteById(id);
     }
 }
-

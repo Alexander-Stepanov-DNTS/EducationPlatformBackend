@@ -1,7 +1,6 @@
 package ru.stepanov.EducationPlatform.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -9,11 +8,8 @@ import ru.stepanov.EducationPlatform.DTO.InstitutionDto;
 import ru.stepanov.EducationPlatform.DTO.RoleDto;
 import ru.stepanov.EducationPlatform.mappers.InstitutionMapper;
 import ru.stepanov.EducationPlatform.mappers.RoleMapper;
-import ru.stepanov.EducationPlatform.models.Institution;
-import ru.stepanov.EducationPlatform.models.Role;
 import ru.stepanov.EducationPlatform.models.User;
 import ru.stepanov.EducationPlatform.repositories.UserRepository;
-import ru.stepanov.EducationPlatform.services.InstitutionService;
 import ru.stepanov.EducationPlatform.services.impl.InstitutionServiceImpl;
 import ru.stepanov.EducationPlatform.services.impl.RoleServiceImpl;
 
@@ -47,10 +43,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
     public boolean existsByEmail(String emailAddress) {
         User user = userRepository.findByEmailAddress(emailAddress);
-        if (user == null) {
-            return false;
-        }
-        return true;
+        return user != null;
     }
 
     public MyUserDetails saveUser(String login, String password, String email_address) {

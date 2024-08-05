@@ -19,8 +19,12 @@ import java.util.stream.Collectors;
 @Service
 public class EnrolmentServiceImpl implements EnrolmentService {
 
+    private final EnrolmentRepository enrolmentRepository;
+
     @Autowired
-    private EnrolmentRepository enrolmentRepository;
+    public EnrolmentServiceImpl(EnrolmentRepository enrolmentRepository) {
+        this.enrolmentRepository = enrolmentRepository;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -42,6 +46,10 @@ public class EnrolmentServiceImpl implements EnrolmentService {
     @Transactional
     public EnrolmentDto createEnrolment(EnrolmentDto enrolmentDto) {
         Enrolment enrolment = EnrolmentMapper.INSTANCE.toEntity(enrolmentDto);
+
+        EnrolmentId enrolmentId = new EnrolmentId(enrolmentDto.getCourse().getId(), enrolmentDto.getStudent().getId());
+        enrolment.setId(enrolmentId);
+
         enrolment = enrolmentRepository.save(enrolment);
         return EnrolmentMapper.INSTANCE.toDto(enrolment);
     }

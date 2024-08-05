@@ -8,4 +8,3 @@ public class AchievementDto {
     private String title;
     private String description;
 }
-

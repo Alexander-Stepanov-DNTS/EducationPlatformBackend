@@ -16,8 +16,12 @@ import java.util.stream.Collectors;
 @Service
 public class InstitutionServiceImpl implements InstitutionService {
 
+    private final InstitutionRepository institutionRepository;
+
     @Autowired
-    private InstitutionRepository institutionRepository;
+    public InstitutionServiceImpl(InstitutionRepository institutionRepository) {
+        this.institutionRepository = institutionRepository;
+    }
 
     @Override
     @Transactional(readOnly = true)

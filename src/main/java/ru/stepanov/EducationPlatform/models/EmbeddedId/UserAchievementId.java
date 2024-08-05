@@ -2,10 +2,8 @@ package ru.stepanov.EducationPlatform.models.EmbeddedId;
 
 import jakarta.persistence.Embeddable;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Objects;
 
 @Embeddable

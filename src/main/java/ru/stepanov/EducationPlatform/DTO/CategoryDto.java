@@ -9,4 +9,3 @@ public class CategoryDto {
     private String description;
     private DirectionDto direction;
 }
-

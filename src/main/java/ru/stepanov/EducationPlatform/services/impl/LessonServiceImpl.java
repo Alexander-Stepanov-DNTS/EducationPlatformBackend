@@ -17,8 +17,12 @@ import java.util.stream.Collectors;
 @Service
 public class LessonServiceImpl implements LessonService {
 
+    private final LessonRepository lessonRepository;
+
     @Autowired
-    private LessonRepository lessonRepository;
+    public LessonServiceImpl(LessonRepository lessonRepository) {
+        this.lessonRepository = lessonRepository;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -76,4 +80,3 @@ public class LessonServiceImpl implements LessonService {
         lessonRepository.deleteById(id);
     }
 }
-

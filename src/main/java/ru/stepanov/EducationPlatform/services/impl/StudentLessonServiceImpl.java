@@ -19,8 +19,12 @@ import java.util.stream.Collectors;
 @Service
 public class StudentLessonServiceImpl implements StudentLessonService {
 
+    private final StudentLessonRepository studentLessonRepository;
+
     @Autowired
-    private StudentLessonRepository studentLessonRepository;
+    public StudentLessonServiceImpl(StudentLessonRepository studentLessonRepository) {
+        this.studentLessonRepository = studentLessonRepository;
+    }
 
     @Override
     @Transactional(readOnly = true)

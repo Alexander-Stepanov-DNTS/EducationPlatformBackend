@@ -16,8 +16,12 @@ import java.util.stream.Collectors;
 @Service
 public class DirectionServiceImpl implements DirectionService {
 
+    private final DirectionRepository directionRepository;
+
     @Autowired
-    private DirectionRepository directionRepository;
+    public DirectionServiceImpl(DirectionRepository directionRepository) {
+        this.directionRepository = directionRepository;
+    }
 
     @Override
     @Transactional(readOnly = true)

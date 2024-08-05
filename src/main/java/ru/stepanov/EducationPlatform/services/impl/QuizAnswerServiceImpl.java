@@ -17,8 +17,12 @@ import java.util.stream.Collectors;
 @Service
 public class QuizAnswerServiceImpl implements QuizAnswerService {
 
+    private final QuizAnswerRepository quizAnswerRepository;
+
     @Autowired
-    private QuizAnswerRepository quizAnswerRepository;
+    public QuizAnswerServiceImpl(QuizAnswerRepository quizAnswerRepository) {
+        this.quizAnswerRepository = quizAnswerRepository;
+    }
 
     @Override
     @Transactional(readOnly = true)

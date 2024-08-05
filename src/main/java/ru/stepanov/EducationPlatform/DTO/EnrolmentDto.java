@@ -12,4 +12,3 @@ public class EnrolmentDto {
     private LocalDateTime completedDatetime;
     private Boolean isAuthor;
 }
-

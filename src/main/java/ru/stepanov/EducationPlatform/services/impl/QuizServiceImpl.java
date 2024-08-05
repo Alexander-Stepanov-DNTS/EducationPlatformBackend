@@ -3,11 +3,9 @@ package ru.stepanov.EducationPlatform.services.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.stepanov.EducationPlatform.DTO.LessonDto;
 import ru.stepanov.EducationPlatform.DTO.QuizDto;
 import ru.stepanov.EducationPlatform.DTO.QuizQuestionDto;
 import ru.stepanov.EducationPlatform.mappers.CourseMapper;
-import ru.stepanov.EducationPlatform.mappers.LessonMapper;
 import ru.stepanov.EducationPlatform.mappers.QuizMapper;
 import ru.stepanov.EducationPlatform.mappers.QuizQuestionMapper;
 import ru.stepanov.EducationPlatform.models.Quiz;
@@ -23,11 +21,15 @@ import java.util.stream.Collectors;
 @Service
 public class QuizServiceImpl implements QuizService {
 
-    @Autowired
-    private QuizRepository quizRepository;
+    private final QuizRepository quizRepository;
+
+    private final QuizQuestionRepository quizQuestionRepository;
 
     @Autowired
-    private QuizQuestionRepository quizQuestionRepository;
+    public QuizServiceImpl(QuizRepository quizRepository, QuizQuestionRepository quizQuestionRepository) {
+        this.quizRepository = quizRepository;
+        this.quizQuestionRepository = quizQuestionRepository;
+    }
 
     @Override
     @Transactional(readOnly = true)
@@ -77,7 +79,7 @@ public class QuizServiceImpl implements QuizService {
             quiz = quizRepository.save(quiz);
             return QuizMapper.INSTANCE.toDto(quiz);
         } else {
-            return null; // или выбросить исключение
+            return null;
         }
     }
 

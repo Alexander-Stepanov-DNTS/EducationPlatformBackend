@@ -13,7 +13,6 @@ public class EnrolmentId implements Serializable {
     private Long studentId;
 
     public EnrolmentId() {
-
     }
 
     @Override

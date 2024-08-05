@@ -13,7 +13,6 @@ public class StudentLessonId implements Serializable {
     private Long lessonId;
 
     public StudentLessonId() {
-
     }
 
     @Override

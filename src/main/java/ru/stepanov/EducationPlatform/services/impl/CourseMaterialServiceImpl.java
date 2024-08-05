@@ -9,7 +9,6 @@ import ru.stepanov.EducationPlatform.models.Course;
 import ru.stepanov.EducationPlatform.models.CourseMaterial;
 import ru.stepanov.EducationPlatform.models.Enrolment;
 import ru.stepanov.EducationPlatform.repositories.CourseMaterialRepository;
-import ru.stepanov.EducationPlatform.repositories.CourseRepository;
 import ru.stepanov.EducationPlatform.repositories.EnrolmentRepository;
 import ru.stepanov.EducationPlatform.services.CourseMaterialService;
 
@@ -23,14 +22,11 @@ public class CourseMaterialServiceImpl implements CourseMaterialService {
 
     private final CourseMaterialRepository courseMaterialRepository;
 
-    private final CourseRepository courseRepository;
-
     private final EnrolmentRepository enrollmentRepository;
 
     @Autowired
-    public CourseMaterialServiceImpl(CourseMaterialRepository courseMaterialRepository, CourseRepository courseRepository, EnrolmentRepository enrollmentRepository) {
+    public CourseMaterialServiceImpl(CourseMaterialRepository courseMaterialRepository, EnrolmentRepository enrollmentRepository) {
         this.courseMaterialRepository = courseMaterialRepository;
-        this.courseRepository = courseRepository;
         this.enrollmentRepository = enrollmentRepository;
     }
 
@@ -105,4 +101,3 @@ public class CourseMaterialServiceImpl implements CourseMaterialService {
         courseMaterialRepository.deleteById(id);
     }
 }
-

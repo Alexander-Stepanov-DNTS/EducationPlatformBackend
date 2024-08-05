@@ -16,8 +16,12 @@ import java.util.stream.Collectors;
 @Service
 public class AchievementServiceImpl implements AchievementService {
 
+    private final AchievementRepository achievementRepository;
+
     @Autowired
-    private AchievementRepository achievementRepository;
+    public AchievementServiceImpl(AchievementRepository achievementRepository) {
+        this.achievementRepository = achievementRepository;
+    }
 
     @Override
     @Transactional(readOnly = true)

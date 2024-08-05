@@ -2,7 +2,14 @@ package ru.stepanov.EducationPlatform.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ru.stepanov.EducationPlatform.DTO.StudentQuizAttemptDto;
 import ru.stepanov.EducationPlatform.services.StudentQuizAttemptService;
 
@@ -13,8 +20,12 @@ import java.util.List;
 @RequestMapping("/student-quiz-attempts")
 public class StudentQuizAttemptController {
 
+    private final StudentQuizAttemptService studentQuizAttemptService;
+
     @Autowired
-    private StudentQuizAttemptService studentQuizAttemptService;
+    public StudentQuizAttemptController(StudentQuizAttemptService studentQuizAttemptService) {
+        this.studentQuizAttemptService = studentQuizAttemptService;
+    }
 
     @GetMapping("/{studentId}/{quizId}/{attemptDatetime}")
     public ResponseEntity<StudentQuizAttemptDto> getStudentQuizAttemptById(@PathVariable Long studentId, @PathVariable Long quizId, @PathVariable LocalDateTime attemptDatetime) {

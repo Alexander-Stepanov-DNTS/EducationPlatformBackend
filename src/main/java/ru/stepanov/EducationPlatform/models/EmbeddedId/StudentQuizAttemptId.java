@@ -15,7 +15,6 @@ public class StudentQuizAttemptId implements Serializable {
     private LocalDateTime attemptDatetime;
 
     public StudentQuizAttemptId() {
-
     }
 
     @Override

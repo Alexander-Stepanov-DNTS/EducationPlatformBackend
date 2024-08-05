@@ -2,8 +2,14 @@ package ru.stepanov.EducationPlatform.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import ru.stepanov.EducationPlatform.DTO.LessonDto;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ru.stepanov.EducationPlatform.DTO.QuizDto;
 import ru.stepanov.EducationPlatform.DTO.QuizQuestionDto;
 import ru.stepanov.EducationPlatform.services.QuizService;
@@ -14,8 +20,12 @@ import java.util.List;
 @RequestMapping("/quizzes")
 public class QuizController {
 
+    private final QuizService quizService;
+
     @Autowired
-    private QuizService quizService;
+    public QuizController(QuizService quizService) {
+        this.quizService = quizService;
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<QuizDto> getQuizById(@PathVariable Long id) {
@@ -58,10 +68,4 @@ public class QuizController {
         List<QuizQuestionDto> questions = quizService.getQuizQuestions(quizId);
         return ResponseEntity.ok(questions);
     }
-
-//    @PostMapping("/{quizId}/submit")
-//    public ResponseEntity<Void> submitQuiz(@PathVariable Long quizId, @RequestBody QuizSubmissionDto submission) {
-//        quizService.submitQuiz(quizId, submission);
-//        return ResponseEntity.ok().build();
-//    }
 }

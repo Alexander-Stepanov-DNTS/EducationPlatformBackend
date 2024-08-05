@@ -10,4 +10,3 @@ public class StudentLessonDto {
     private LessonDto lesson;
     private LocalDateTime completedDatetime;
 }
-

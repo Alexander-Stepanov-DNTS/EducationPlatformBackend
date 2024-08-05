@@ -12,4 +12,3 @@ public class CourseDto {
     private String picture_url;
     private CategoryDto category;
 }
-

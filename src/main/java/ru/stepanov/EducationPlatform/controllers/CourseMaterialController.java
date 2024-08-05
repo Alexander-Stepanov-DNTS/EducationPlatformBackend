@@ -2,7 +2,15 @@ package ru.stepanov.EducationPlatform.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import ru.stepanov.EducationPlatform.DTO.CourseMaterialDto;
 import ru.stepanov.EducationPlatform.services.CourseMaterialService;
 
@@ -12,8 +20,12 @@ import java.util.List;
 @RequestMapping("/course-materials")
 public class CourseMaterialController {
 
+    private final CourseMaterialService courseMaterialService;
+
     @Autowired
-    private CourseMaterialService courseMaterialService;
+    public CourseMaterialController(CourseMaterialService courseMaterialService) {
+        this.courseMaterialService = courseMaterialService;
+    }
 
     @GetMapping("/{id}")
     public ResponseEntity<CourseMaterialDto> getCourseMaterialById(@PathVariable Long id) {
@@ -58,4 +70,3 @@ public class CourseMaterialController {
         return ResponseEntity.noContent().build();
     }
 }
-
