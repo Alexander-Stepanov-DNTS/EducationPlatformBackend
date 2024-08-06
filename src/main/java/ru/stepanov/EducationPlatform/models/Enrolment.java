@@ -41,4 +41,7 @@ public class Enrolment {
 
     @Column(nullable = false)
     private Boolean isAuthor;
+
+    @Column()
+    private Long progress;
 }

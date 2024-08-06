@@ -8,7 +8,6 @@ import ru.stepanov.EducationPlatform.models.QuizQuestion;
 @Mapper
 public interface QuizQuestionMapper {
     QuizQuestionMapper INSTANCE = Mappers.getMapper(QuizQuestionMapper.class);
-
     QuizQuestionDto toDto(QuizQuestion quizQuestion);
     QuizQuestion toEntity(QuizQuestionDto quizQuestionDto);
 }

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import ru.stepanov.EducationPlatform.DTO.StudentLessonDto;
 import ru.stepanov.EducationPlatform.services.StudentLessonService;
@@ -30,6 +31,12 @@ public class StudentLessonController {
     public ResponseEntity<StudentLessonDto> getStudentLessonById(@PathVariable Long studentId, @PathVariable Long lessonId) {
         StudentLessonDto studentLesson = studentLessonService.getStudentLessonById(studentId, lessonId);
         return ResponseEntity.ok(studentLesson);
+    }
+
+    @GetMapping("/check")
+    public ResponseEntity<Boolean> checkStudentLessonExists(@RequestParam Long studentId, @RequestParam Long lessonId) {
+        boolean exists = studentLessonService.studentLessonExists(studentId, lessonId);
+        return ResponseEntity.ok(exists);
     }
 
     @GetMapping

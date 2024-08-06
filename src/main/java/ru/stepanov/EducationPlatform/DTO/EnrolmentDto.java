@@ -11,4 +11,5 @@ public class EnrolmentDto {
     private LocalDateTime enrolmentDatetime;
     private LocalDateTime completedDatetime;
     private Boolean isAuthor;
+    private Long progress;
 }

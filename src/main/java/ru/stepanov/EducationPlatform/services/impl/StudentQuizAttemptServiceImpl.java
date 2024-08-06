@@ -11,6 +11,8 @@ import ru.stepanov.EducationPlatform.models.EmbeddedId.StudentQuizAttemptId;
 import ru.stepanov.EducationPlatform.models.Quiz;
 import ru.stepanov.EducationPlatform.models.StudentQuizAttempt;
 import ru.stepanov.EducationPlatform.models.User;
+import ru.stepanov.EducationPlatform.models.Enrolment;
+import ru.stepanov.EducationPlatform.repositories.EnrolmentRepository;
 import ru.stepanov.EducationPlatform.repositories.QuizRepository;
 import ru.stepanov.EducationPlatform.repositories.StudentQuizAttemptRepository;
 import ru.stepanov.EducationPlatform.repositories.UserRepository;
@@ -28,11 +30,14 @@ public class StudentQuizAttemptServiceImpl implements StudentQuizAttemptService 
     private final UserRepository userRepository;
     public final QuizRepository quizRepository;
 
+    private final EnrolmentRepository enrolmentRepository;
+
     @Autowired
-    public StudentQuizAttemptServiceImpl(StudentQuizAttemptRepository studentQuizAttemptRepository, UserRepository userRepository, QuizRepository quizRepository) {
+    public StudentQuizAttemptServiceImpl(StudentQuizAttemptRepository studentQuizAttemptRepository, UserRepository userRepository, QuizRepository quizRepository, EnrolmentRepository enrolmentRepository) {
         this.studentQuizAttemptRepository = studentQuizAttemptRepository;
         this.userRepository = userRepository;
         this.quizRepository = quizRepository;
+        this.enrolmentRepository = enrolmentRepository;
     }
 
     @Override
@@ -41,6 +46,12 @@ public class StudentQuizAttemptServiceImpl implements StudentQuizAttemptService 
         StudentQuizAttemptId studentQuizAttemptId = new StudentQuizAttemptId(studentId, quizId, attemptDatetime);
         Optional<StudentQuizAttempt> studentQuizAttempt = studentQuizAttemptRepository.findById(studentQuizAttemptId);
         return studentQuizAttempt.map(StudentQuizAttemptMapper.INSTANCE::toDto).orElse(null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean studentQuizAttemptExists(Long studentId, Long quizId) {
+        return studentQuizAttemptRepository.existsByIdStudentIdAndIdQuizId(studentId, quizId);
     }
 
     @Override
@@ -70,7 +81,15 @@ public class StudentQuizAttemptServiceImpl implements StudentQuizAttemptService 
         attempt.setScoreAchieved(studentQuizAttemptDto.getScoreAchieved());
 
         attempt = studentQuizAttemptRepository.save(attempt);
+        // Увеличиваем счетчик количества пройденных занятий в таблице enrolment
+        Optional<Enrolment> enrolmentOptional = enrolmentRepository.findByIdCourseIdAndIdStudentId(
+                quiz.getCourse().getId(), studentQuizAttemptDto.getStudent().getId());
 
+        if (enrolmentOptional.isPresent()) {
+            Enrolment enrolment = enrolmentOptional.get();
+            enrolment.setProgress(enrolment.getProgress() + 1);
+            enrolmentRepository.save(enrolment);
+        }
         return StudentQuizAttemptMapper.INSTANCE.toDto(attempt);
     }
 

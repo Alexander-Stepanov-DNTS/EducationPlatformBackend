@@ -8,7 +8,9 @@ import ru.stepanov.EducationPlatform.mappers.LessonMapper;
 import ru.stepanov.EducationPlatform.mappers.StudentLessonMapper;
 import ru.stepanov.EducationPlatform.mappers.UserMapper;
 import ru.stepanov.EducationPlatform.models.EmbeddedId.StudentLessonId;
+import ru.stepanov.EducationPlatform.models.Enrolment;
 import ru.stepanov.EducationPlatform.models.StudentLesson;
+import ru.stepanov.EducationPlatform.repositories.EnrolmentRepository;
 import ru.stepanov.EducationPlatform.repositories.StudentLessonRepository;
 import ru.stepanov.EducationPlatform.services.StudentLessonService;
 
@@ -21,9 +23,12 @@ public class StudentLessonServiceImpl implements StudentLessonService {
 
     private final StudentLessonRepository studentLessonRepository;
 
+    private final EnrolmentRepository enrolmentRepository;
+
     @Autowired
-    public StudentLessonServiceImpl(StudentLessonRepository studentLessonRepository) {
+    public StudentLessonServiceImpl(StudentLessonRepository studentLessonRepository, EnrolmentRepository enrolmentRepository) {
         this.studentLessonRepository = studentLessonRepository;
+        this.enrolmentRepository = enrolmentRepository;
     }
 
     @Override
@@ -32,6 +37,13 @@ public class StudentLessonServiceImpl implements StudentLessonService {
         StudentLessonId studentLessonId = new StudentLessonId(studentId, lessonId);
         Optional<StudentLesson> studentLesson = studentLessonRepository.findById(studentLessonId);
         return studentLesson.map(StudentLessonMapper.INSTANCE::toDto).orElse(null);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public boolean studentLessonExists(Long studentId, Long lessonId) {
+        StudentLessonId studentLessonId = new StudentLessonId(studentId, lessonId);
+        return studentLessonRepository.existsById(studentLessonId);
     }
 
     @Override
@@ -46,7 +58,22 @@ public class StudentLessonServiceImpl implements StudentLessonService {
     @Transactional
     public StudentLessonDto createStudentLesson(StudentLessonDto studentLessonDto) {
         StudentLesson studentLesson = StudentLessonMapper.INSTANCE.toEntity(studentLessonDto);
+
+        StudentLessonId studentLessonId = new StudentLessonId(studentLessonDto.getStudent().getId(),
+                studentLessonDto.getLesson().getId());
+        studentLesson.setId(studentLessonId);
+
         studentLesson = studentLessonRepository.save(studentLesson);
+
+        Optional<Enrolment> enrolmentOptional = enrolmentRepository.findByIdCourseIdAndIdStudentId
+                (studentLesson.getLesson().getCourse().getId(), studentLessonDto.getStudent().getId());
+
+        if (enrolmentOptional.isPresent()) {
+            Enrolment enrolment = enrolmentOptional.get();
+            enrolment.setProgress(enrolment.getProgress() + 1);
+            enrolmentRepository.save(enrolment);
+        }
+
         return StudentLessonMapper.INSTANCE.toDto(studentLesson);
     }
 

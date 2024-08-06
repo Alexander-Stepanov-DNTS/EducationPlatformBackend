@@ -7,4 +7,5 @@ import ru.stepanov.EducationPlatform.models.StudentQuizAttempt;
 
 @Repository
 public interface StudentQuizAttemptRepository extends JpaRepository<StudentQuizAttempt, StudentQuizAttemptId> {
+    boolean existsByIdStudentIdAndIdQuizId(Long studentId, Long quizId);
 }

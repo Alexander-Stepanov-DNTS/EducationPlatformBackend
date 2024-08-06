@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface StudentQuizAttemptService {
     StudentQuizAttemptDto getStudentQuizAttemptById(Long studentId, Long quizId, LocalDateTime attemptDatetime);
+    boolean studentQuizAttemptExists(Long studentId, Long quizId);
     List<StudentQuizAttemptDto> getAllStudentQuizAttempts();
     StudentQuizAttemptDto createStudentQuizAttempt(StudentQuizAttemptDto studentQuizAttemptDto);
     StudentQuizAttemptDto updateStudentQuizAttempt(Long studentId, Long quizId, LocalDateTime attemptDatetime, StudentQuizAttemptDto studentQuizAttemptDto);

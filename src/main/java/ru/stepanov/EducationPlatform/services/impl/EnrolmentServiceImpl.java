@@ -10,6 +10,7 @@ import ru.stepanov.EducationPlatform.mappers.UserMapper;
 import ru.stepanov.EducationPlatform.models.EmbeddedId.EnrolmentId;
 import ru.stepanov.EducationPlatform.models.Enrolment;
 import ru.stepanov.EducationPlatform.repositories.EnrolmentRepository;
+import ru.stepanov.EducationPlatform.repositories.UserRepository;
 import ru.stepanov.EducationPlatform.services.EnrolmentService;
 
 import java.util.List;
