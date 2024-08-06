@@ -83,7 +83,7 @@ public class EnrolmentServiceImpl implements EnrolmentService {
     @Override
     @Transactional
     public boolean isEnrolled(Long courseId, Long studentId) {
-        return enrolmentRepository.findById_CourseIdAndId_StudentId(courseId, studentId).isPresent();
+        return enrolmentRepository.findByIdCourseIdAndIdStudentId(courseId, studentId).isPresent();
     }
 }
 

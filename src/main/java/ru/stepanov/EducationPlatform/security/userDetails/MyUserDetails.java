@@ -1,12 +1,11 @@
-package ru.stepanov.EducationPlatform.security;
+package ru.stepanov.EducationPlatform.security.userDetails;
 
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import ru.stepanov.EducationPlatform.models.User;
 
 import java.util.Collection;
 
-public class MyUserDetails implements UserDetails {
+public class MyUserDetails implements CustomUserDetails {
 
     private final User user;
 
@@ -29,24 +28,6 @@ public class MyUserDetails implements UserDetails {
         return user.getEmailAddress();
     }
 
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() { return true; }
-
     public String getLogin() {
         return user.getLogin();
     }
@@ -59,4 +40,3 @@ public class MyUserDetails implements UserDetails {
         return user.getRole().getName();
     }
 }
-

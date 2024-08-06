@@ -75,7 +75,7 @@ public class QuizQuestionServiceImpl implements QuizQuestionService {
     @Override
     @Transactional
     public List<QuizAnswerDto> getQuestionAnswers(Long questionId){
-        List<QuizAnswer> answers = quizAnswerRepository.findByQuestion_Id(questionId);
+        List<QuizAnswer> answers = quizAnswerRepository.findByQuestionId(questionId);
         return answers.stream()
                 .map(QuizAnswerMapper.INSTANCE::toDto)
                 .collect(Collectors.toList());

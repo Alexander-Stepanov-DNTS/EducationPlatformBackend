@@ -1,8 +1,6 @@
 package ru.stepanov.EducationPlatform.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.Getter;
-import lombok.Setter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,9 +13,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import ru.stepanov.EducationPlatform.security.JwtTokenUtil;
-import ru.stepanov.EducationPlatform.security.MyUserDetails;
-import ru.stepanov.EducationPlatform.security.MyUserDetailsService;
+import ru.stepanov.EducationPlatform.controllers.message.AuthRequest;
+import ru.stepanov.EducationPlatform.controllers.message.AuthResponse;
+import ru.stepanov.EducationPlatform.security.userDetails.CustomUserDetails;
+import ru.stepanov.EducationPlatform.security.userDetails.CustomUserDetailsService;
+import ru.stepanov.EducationPlatform.security.jwt.JwtTokenUtil;
+import ru.stepanov.EducationPlatform.security.userDetails.MyUserDetailsService;
 
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,7 +32,7 @@ public class AuthController {
 
     private final AuthenticationManager authenticationManager;
 
-    private final MyUserDetailsService userDetailsService;
+    private final CustomUserDetailsService userDetailsService;
 
     private final JwtTokenUtil jwtTokenUtil;
 
@@ -49,7 +50,7 @@ public class AuthController {
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(authRequest.getEmail_address(), authRequest.getPassword())
             );
-            final MyUserDetails userDetails = userDetailsService.loadUserByUsername(authRequest.getEmail_address());
+            final CustomUserDetails userDetails = (CustomUserDetails)userDetailsService.loadUserByUsername(authRequest.getEmail_address());
             final String token = jwtTokenUtil.generateToken(userDetails);
 
             Cookie cookie = new Cookie("jwt", token);
@@ -107,31 +108,3 @@ public class AuthController {
     }
 }
 
-@Setter
-@Getter
-class AuthRequest {
-    private String id;
-    private String login;
-    private String email_address;
-    private String password;
-
-    public AuthRequest(){}
-
-    public AuthRequest(String email_address, String password, String login) {
-        this.email_address = email_address;
-        this.password = password;
-        this.login = login;
-    }
-
-}
-
-@Setter
-@Getter
-class AuthResponse {
-    private String message;
-    public AuthResponse() {}
-
-    public AuthResponse(String message) {
-        this.message = message;
-    }
-}

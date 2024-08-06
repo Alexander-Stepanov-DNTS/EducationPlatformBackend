@@ -1,4 +1,4 @@
-package ru.stepanov.EducationPlatform.security;
+package ru.stepanov.EducationPlatform.security.jwt;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,6 +13,9 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import ru.stepanov.EducationPlatform.security.userDetails.MyUserDetails;
+import ru.stepanov.EducationPlatform.security.userDetails.MyUserDetailsService;
+
 import java.io.IOException;
 
 @Component
@@ -50,11 +53,9 @@ public class JwtRequestFilter extends OncePerRequestFilter {
             }
         }
 
-        // Once we get the token validate it.
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             MyUserDetails userDetails = this.myUserDetailsService.loadUserByUsername(username);
 
-            // if token is valid configure Spring Security to manually set authentication
             if (jwtTokenUtil.validateToken(jwtToken, userDetails)) {
                 UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
                         userDetails, null, userDetails.getAuthorities());

@@ -143,9 +143,9 @@ public class EnrolmentRepositoryTest {
         enrolment.setStudent(user);
         enrolment.setEnrolmentDatetime(LocalDateTime.now());
         enrolment.setIsAuthor(false);
-        enrolment = enrolmentRepository.save(enrolment);
+        enrolmentRepository.save(enrolment);
 
-        Optional<Enrolment> foundEnrolment = enrolmentRepository.findById_CourseIdAndId_StudentId(course.getId(), user.getId());
+        Optional<Enrolment> foundEnrolment = enrolmentRepository.findByIdCourseIdAndIdStudentId(course.getId(), user.getId());
         assertTrue(foundEnrolment.isPresent());
         assertEquals(course.getId(), foundEnrolment.get().getCourse().getId());
         assertEquals(user.getId(), foundEnrolment.get().getStudent().getId());
@@ -207,7 +207,7 @@ public class EnrolmentRepositoryTest {
         enrolment1.setStudent(user);
         enrolment1.setEnrolmentDatetime(LocalDateTime.now());
         enrolment1.setIsAuthor(false);
-        enrolment1 = enrolmentRepository.save(enrolment1);
+        enrolmentRepository.save(enrolment1);
 
         EnrolmentId enrolmentId2 = new EnrolmentId(course2.getId(), user.getId());
         Enrolment enrolment2 = new Enrolment();
@@ -216,7 +216,7 @@ public class EnrolmentRepositoryTest {
         enrolment2.setStudent(user);
         enrolment2.setEnrolmentDatetime(LocalDateTime.now());
         enrolment2.setIsAuthor(false);
-        enrolment2 = enrolmentRepository.save(enrolment2);
+        enrolmentRepository.save(enrolment2);
 
         List<Enrolment> enrolments = enrolmentRepository.findByStudentId(user.getId());
         assertEquals(2, enrolments.size());

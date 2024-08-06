@@ -83,7 +83,7 @@ public class QuizAnswerRepositoryTest {
         QuizAnswer savedAnswer = quizAnswerRepository.save(answer);
 
         assertNotNull(savedAnswer.getId());
-        List<QuizAnswer> foundAnswers = quizAnswerRepository.findByQuestion_Id(question.getId());
+        List<QuizAnswer> foundAnswers = quizAnswerRepository.findByQuestionId(question.getId());
         assertEquals(1, foundAnswers.size());
         assertEquals("A programming language", foundAnswers.get(0).getAnswerText());
     }
@@ -137,7 +137,7 @@ public class QuizAnswerRepositoryTest {
         answer2.setIsCorrect(false);
         quizAnswerRepository.save(answer2);
 
-        List<QuizAnswer> foundAnswers = quizAnswerRepository.findByQuestion_Id(question.getId());
+        List<QuizAnswer> foundAnswers = quizAnswerRepository.findByQuestionId(question.getId());
         assertEquals(2, foundAnswers.size());
         assertTrue(foundAnswers.stream().anyMatch(a -> a.getAnswerText().equals("A programming language")));
         assertTrue(foundAnswers.stream().anyMatch(a -> a.getAnswerText().equals("An island")));

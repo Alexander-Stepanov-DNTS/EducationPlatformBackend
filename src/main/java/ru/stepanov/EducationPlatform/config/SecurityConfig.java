@@ -9,6 +9,7 @@ import org.springframework.security.config.annotation.authentication.configurati
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -19,8 +20,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import ru.stepanov.EducationPlatform.security.JwtRequestFilter;
-import ru.stepanov.EducationPlatform.security.MyUserDetailsService;
+import ru.stepanov.EducationPlatform.security.jwt.JwtRequestFilter;
 
 import java.util.Arrays;
 import java.util.List;
@@ -30,13 +30,10 @@ import java.util.List;
 @Profile("main")
 public class SecurityConfig implements WebMvcConfigurer {
 
-    private final MyUserDetailsService myUserDetailsService;
-
     private final JwtRequestFilter jwtRequestFilter;
 
     @Autowired
-    public SecurityConfig(MyUserDetailsService myUserDetailsService, JwtRequestFilter jwtRequestFilter) {
-        this.myUserDetailsService = myUserDetailsService;
+    public SecurityConfig(JwtRequestFilter jwtRequestFilter) {
         this.jwtRequestFilter = jwtRequestFilter;
     }
 
@@ -50,7 +47,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                                 .anyRequest().authenticated()
                 )
                 .formLogin(AbstractHttpConfigurer::disable)
-                .logout(logout -> logout.permitAll())
+                .logout(LogoutConfigurer::permitAll)
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

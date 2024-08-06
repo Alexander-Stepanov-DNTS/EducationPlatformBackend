@@ -1,4 +1,4 @@
-package ru.stepanov.EducationPlatform.security;
+package ru.stepanov.EducationPlatform.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -7,6 +7,8 @@ import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import ru.stepanov.EducationPlatform.security.userDetails.CustomUserDetails;
+import ru.stepanov.EducationPlatform.security.userDetails.MyUserDetails;
 
 import java.security.Key;
 import java.util.Date;
@@ -28,7 +30,7 @@ public class JwtTokenUtil {
         return Keys.hmacShaKeyFor(keyBytes);
     }
 
-    public String generateToken(MyUserDetails userDetails) {
+    public String generateToken(CustomUserDetails userDetails) {
         Map<String, Object> claims = new HashMap<>();
         claims.put("id", userDetails.getUserId());
         claims.put("role", userDetails.getUserRole());

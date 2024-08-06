@@ -1,7 +1,6 @@
-package ru.stepanov.EducationPlatform.security;
+package ru.stepanov.EducationPlatform.security.userDetails;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import ru.stepanov.EducationPlatform.DTO.InstitutionDto;
@@ -17,7 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Service
-public class MyUserDetailsService implements UserDetailsService {
+public class MyUserDetailsService implements CustomUserDetailsService {
 
     private final UserRepository userRepository;
 
@@ -61,4 +60,3 @@ public class MyUserDetailsService implements UserDetailsService {
         return new MyUserDetails(userRepository.save(newUser));
     }
 }
-
