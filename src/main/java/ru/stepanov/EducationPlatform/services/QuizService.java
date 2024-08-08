@@ -1,6 +1,5 @@
 package ru.stepanov.EducationPlatform.services;
 
-import ru.stepanov.EducationPlatform.DTO.LessonDto;
 import ru.stepanov.EducationPlatform.DTO.QuizDto;
 import ru.stepanov.EducationPlatform.DTO.QuizQuestionDto;
 
@@ -13,5 +12,6 @@ public interface QuizService {
     QuizDto createQuiz(QuizDto quizDto);
     QuizDto updateQuiz(Long id, QuizDto quizDto);
     void deleteQuiz(Long id);
-    public List<QuizQuestionDto> getQuizQuestions(Long quizId);
+    List<QuizQuestionDto> getQuizQuestions(Long quizId);
+    List<QuizQuestionDto> getQuizQuestionsWithAnswers(Long quizId);
 }

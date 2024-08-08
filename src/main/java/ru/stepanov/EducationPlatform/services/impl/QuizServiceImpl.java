@@ -3,17 +3,22 @@ package ru.stepanov.EducationPlatform.services.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.stepanov.EducationPlatform.DTO.QuizAnswerDto;
 import ru.stepanov.EducationPlatform.DTO.QuizDto;
 import ru.stepanov.EducationPlatform.DTO.QuizQuestionDto;
 import ru.stepanov.EducationPlatform.mappers.CourseMapper;
+import ru.stepanov.EducationPlatform.mappers.QuizAnswerMapper;
 import ru.stepanov.EducationPlatform.mappers.QuizMapper;
 import ru.stepanov.EducationPlatform.mappers.QuizQuestionMapper;
 import ru.stepanov.EducationPlatform.models.Quiz;
+import ru.stepanov.EducationPlatform.models.QuizAnswer;
 import ru.stepanov.EducationPlatform.models.QuizQuestion;
+import ru.stepanov.EducationPlatform.repositories.QuizAnswerRepository;
 import ru.stepanov.EducationPlatform.repositories.QuizQuestionRepository;
 import ru.stepanov.EducationPlatform.repositories.QuizRepository;
 import ru.stepanov.EducationPlatform.services.QuizService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -25,10 +30,13 @@ public class QuizServiceImpl implements QuizService {
 
     private final QuizQuestionRepository quizQuestionRepository;
 
+    private final QuizAnswerRepository quizAnswerRepository;
+
     @Autowired
-    public QuizServiceImpl(QuizRepository quizRepository, QuizQuestionRepository quizQuestionRepository) {
+    public QuizServiceImpl(QuizRepository quizRepository, QuizQuestionRepository quizQuestionRepository, QuizAnswerRepository quizAnswerRepository) {
         this.quizRepository = quizRepository;
         this.quizQuestionRepository = quizQuestionRepository;
+        this.quizAnswerRepository = quizAnswerRepository;
     }
 
     @Override
@@ -97,4 +105,19 @@ public class QuizServiceImpl implements QuizService {
                 .collect(Collectors.toList());
     }
 
+    public List<QuizQuestionDto> getQuizQuestionsWithAnswers(Long quizId) {
+        List<QuizQuestion> questions = quizQuestionRepository.findByQuizId(quizId);
+        List<QuizQuestionDto> questionDtos = new ArrayList<>();
+
+        for (QuizQuestion question : questions) {
+            QuizQuestionDto questionDto = QuizQuestionMapper.INSTANCE.toDto(question);
+            List<QuizAnswer> answers = quizAnswerRepository.findByQuestionId(question.getId());
+            List<QuizAnswerDto> answerDtos = answers.stream()
+                    .map(QuizAnswerMapper.INSTANCE::toDto)
+                    .collect(Collectors.toList());
+            questionDto.setOptions(answerDtos);
+            questionDtos.add(questionDto);
+        }
+        return questionDtos;
+    }
 }

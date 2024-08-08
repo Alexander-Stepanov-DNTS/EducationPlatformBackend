@@ -9,10 +9,13 @@ import ru.stepanov.EducationPlatform.mappers.StudentQuizAttemptMapper;
 import ru.stepanov.EducationPlatform.mappers.UserMapper;
 import ru.stepanov.EducationPlatform.models.EmbeddedId.StudentQuizAttemptId;
 import ru.stepanov.EducationPlatform.models.Quiz;
+import ru.stepanov.EducationPlatform.models.QuizAnswer;
 import ru.stepanov.EducationPlatform.models.StudentQuizAttempt;
 import ru.stepanov.EducationPlatform.models.User;
 import ru.stepanov.EducationPlatform.models.Enrolment;
 import ru.stepanov.EducationPlatform.repositories.EnrolmentRepository;
+import ru.stepanov.EducationPlatform.repositories.QuizAnswerRepository;
+import ru.stepanov.EducationPlatform.repositories.QuizQuestionRepository;
 import ru.stepanov.EducationPlatform.repositories.QuizRepository;
 import ru.stepanov.EducationPlatform.repositories.StudentQuizAttemptRepository;
 import ru.stepanov.EducationPlatform.repositories.UserRepository;
@@ -20,6 +23,7 @@ import ru.stepanov.EducationPlatform.services.StudentQuizAttemptService;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -29,15 +33,18 @@ public class StudentQuizAttemptServiceImpl implements StudentQuizAttemptService 
     private final StudentQuizAttemptRepository studentQuizAttemptRepository;
     private final UserRepository userRepository;
     public final QuizRepository quizRepository;
-
     private final EnrolmentRepository enrolmentRepository;
+    private final QuizQuestionRepository quizQuestionRepository;
+    private final QuizAnswerRepository quizAnswerRepository;
 
     @Autowired
-    public StudentQuizAttemptServiceImpl(StudentQuizAttemptRepository studentQuizAttemptRepository, UserRepository userRepository, QuizRepository quizRepository, EnrolmentRepository enrolmentRepository) {
+    public StudentQuizAttemptServiceImpl(StudentQuizAttemptRepository studentQuizAttemptRepository, UserRepository userRepository, QuizRepository quizRepository, EnrolmentRepository enrolmentRepository, QuizQuestionRepository quizQuestionRepository, QuizAnswerRepository quizAnswerRepository) {
         this.studentQuizAttemptRepository = studentQuizAttemptRepository;
         this.userRepository = userRepository;
         this.quizRepository = quizRepository;
         this.enrolmentRepository = enrolmentRepository;
+        this.quizQuestionRepository = quizQuestionRepository;
+        this.quizAnswerRepository = quizAnswerRepository;
     }
 
     @Override
@@ -65,23 +72,23 @@ public class StudentQuizAttemptServiceImpl implements StudentQuizAttemptService 
     @Override
     @Transactional
     public StudentQuizAttemptDto createStudentQuizAttempt(StudentQuizAttemptDto studentQuizAttemptDto) {
-        System.out.println(studentQuizAttemptDto);
-        StudentQuizAttempt attempt = new StudentQuizAttempt();
-
         User user = userRepository.findById(studentQuizAttemptDto.getStudent().getId())
                 .orElseThrow(() -> new RuntimeException("User not found"));
         Quiz quiz = quizRepository.findById(studentQuizAttemptDto.getQuiz().getId())
                 .orElseThrow(() -> new RuntimeException("Quiz not found"));
 
+        StudentQuizAttempt attempt = new StudentQuizAttempt();
         attempt.setStudent(user);
         attempt.setQuiz(quiz);
         LocalDateTime data = LocalDateTime.now();
         attempt.setAttemptDatetime(data);
         attempt.setId(new StudentQuizAttemptId(user.getId(), quiz.getId(), data));
-        attempt.setScoreAchieved(studentQuizAttemptDto.getScoreAchieved());
+
+        int correctAnswers = calculateCorrectAnswers(studentQuizAttemptDto.getAnswers());
+        attempt.setScoreAchieved(correctAnswers);
 
         attempt = studentQuizAttemptRepository.save(attempt);
-        // Увеличиваем счетчик количества пройденных занятий в таблице enrolment
+
         Optional<Enrolment> enrolmentOptional = enrolmentRepository.findByIdCourseIdAndIdStudentId(
                 quiz.getCourse().getId(), studentQuizAttemptDto.getStudent().getId());
 
@@ -90,7 +97,26 @@ public class StudentQuizAttemptServiceImpl implements StudentQuizAttemptService 
             enrolment.setProgress(enrolment.getProgress() + 1);
             enrolmentRepository.save(enrolment);
         }
+
         return StudentQuizAttemptMapper.INSTANCE.toDto(attempt);
+    }
+
+    private int calculateCorrectAnswers(Map<Long, Long> answers) {
+        int correctAnswers = 0;
+        for (Map.Entry<Long, Long> entry : answers.entrySet()) {
+            Long questionId = entry.getKey();
+            Long answerId = entry.getValue();
+
+            quizQuestionRepository.findById(questionId)
+                    .orElseThrow(() -> new RuntimeException("Question not found"));
+            QuizAnswer correctAnswer = quizAnswerRepository.findById(answerId)
+                    .orElseThrow(() -> new RuntimeException("Answer not found"));
+
+            if (correctAnswer.getIsCorrect()) {
+                correctAnswers++;
+            }
+        }
+        return correctAnswers;
     }
 
     @Override
