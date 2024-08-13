@@ -3,46 +3,44 @@ package ru.stepanov.EducationPlatform.security.userDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
-import ru.stepanov.EducationPlatform.DTO.InstitutionDto;
-import ru.stepanov.EducationPlatform.DTO.RoleDto;
-import ru.stepanov.EducationPlatform.mappers.InstitutionMapper;
-import ru.stepanov.EducationPlatform.mappers.RoleMapper;
+import ru.stepanov.EducationPlatform.models.Institution;
+import ru.stepanov.EducationPlatform.models.Role;
 import ru.stepanov.EducationPlatform.models.User;
+import ru.stepanov.EducationPlatform.repositories.InstitutionRepository;
+import ru.stepanov.EducationPlatform.repositories.RoleRepository;
 import ru.stepanov.EducationPlatform.repositories.UserRepository;
 import ru.stepanov.EducationPlatform.services.impl.InstitutionServiceImpl;
 import ru.stepanov.EducationPlatform.services.impl.RoleServiceImpl;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class MyUserDetailsService implements CustomUserDetailsService {
 
     private final UserRepository userRepository;
 
-    private final RoleServiceImpl roleService;
+    private final RoleRepository roleRepository;
 
-    private final InstitutionServiceImpl institutionService;
+    private final InstitutionRepository institutionRepository;
 
     @Autowired
-    public MyUserDetailsService(UserRepository userRepository, RoleServiceImpl roleService, InstitutionServiceImpl institutionService) {
+    public MyUserDetailsService(UserRepository userRepository, RoleRepository roleRepository, InstitutionRepository institutionRepository) {
         this.userRepository = userRepository;
-        this.roleService = roleService;
-        this.institutionService = institutionService;
+        this.roleRepository = roleRepository;
+        this.institutionRepository = institutionRepository;
     }
 
     @Override
     public MyUserDetails loadUserByUsername(String emailAddress) throws UsernameNotFoundException {
-        User user = userRepository.findByEmailAddress(emailAddress);
-        if (user == null) {
-            throw new UsernameNotFoundException("User not found");
-        }
+        Optional<User> userOptional = userRepository.findByEmailAddress(emailAddress);
+        User user = userOptional.orElseThrow(() -> new UsernameNotFoundException("User not found"));
         return new MyUserDetails(user);
     }
 
     public boolean existsByEmail(String emailAddress) {
-        User user = userRepository.findByEmailAddress(emailAddress);
-        return user != null;
+        return userRepository.findByEmailAddress(emailAddress).isPresent();
     }
 
     public MyUserDetails saveUser(String login, String password, String email_address) {
@@ -50,11 +48,15 @@ public class MyUserDetailsService implements CustomUserDetailsService {
         newUser.setLogin(login);
         newUser.setEmailAddress(email_address);
         newUser.setPassword(password);
-        RoleDto studentRole = roleService.getRoleByName("Студент");
-        InstitutionDto institutionDto = institutionService.getInstitutionById(1L);
-        System.out.println(institutionDto.getName());
-        newUser.setRole(RoleMapper.INSTANCE.toEntity(studentRole));
-        newUser.setInstitution(InstitutionMapper.INSTANCE.toEntity(institutionDto));
+
+        Optional<Role> roleOptional = roleRepository.findByName("Студент");
+        Optional<Institution> institutionOptional = institutionRepository.findById(1L);
+
+        Role role = roleOptional.orElseThrow(() -> new RuntimeException("Role not found"));
+        Institution institution = institutionOptional.orElseThrow(() -> new RuntimeException("Institution not found"));
+
+        newUser.setRole(role);
+        newUser.setInstitution(institution);
         newUser.setSignupDate(LocalDate.from(LocalDateTime.now()));
 
         return new MyUserDetails(userRepository.save(newUser));

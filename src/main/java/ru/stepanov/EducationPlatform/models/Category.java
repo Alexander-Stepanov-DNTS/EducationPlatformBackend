@@ -36,7 +36,7 @@ public class Category {
     }
 
     @ManyToOne
-    @JoinColumn(name = "direction_id", referencedColumnName = "id") //,nullable = false
+    @JoinColumn(name = "direction_id", referencedColumnName = "id")
     private Direction direction;
 
     @OneToMany(mappedBy = "category")

@@ -1,9 +1,11 @@
 package ru.stepanov.EducationPlatform.security.userDetails;
 
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import ru.stepanov.EducationPlatform.models.User;
 
 import java.util.Collection;
+import java.util.Collections;
 
 public class MyUserDetails implements CustomUserDetails {
 
@@ -15,7 +17,7 @@ public class MyUserDetails implements CustomUserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;//Collections.singletonList(new SimpleGrantedAuthority(user.getRole().getName()));
+        return Collections.singletonList(new SimpleGrantedAuthority(user.getRole().getName()));
     }
 
     @Override

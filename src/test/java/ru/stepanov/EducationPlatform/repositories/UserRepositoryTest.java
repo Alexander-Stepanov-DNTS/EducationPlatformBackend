@@ -10,6 +10,7 @@ import ru.stepanov.EducationPlatform.models.Role;
 import ru.stepanov.EducationPlatform.models.User;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -46,8 +47,9 @@ public class UserRepositoryTest {
         user.setInstitution(institution);
         user = userRepository.save(user);
 
-        User foundUser = userRepository.findByEmailAddress("test@example.com");
-        assertNotNull(foundUser);
+        Optional<User> foundUserOptional = userRepository.findByEmailAddress("test@example.com");
+        assertTrue(foundUserOptional.isPresent());
+        User foundUser = foundUserOptional.get();
         assertEquals("test@example.com", foundUser.getEmailAddress());
     }
 
@@ -71,8 +73,9 @@ public class UserRepositoryTest {
         user.setInstitution(institution);
         user = userRepository.save(user);
 
-        User foundUser = userRepository.findByLogin("testUser2");
-        assertNotNull(foundUser);
+        Optional<User> foundUserOptional = userRepository.findByLogin("testUser2");
+        assertTrue(foundUserOptional.isPresent());
+        User foundUser = foundUserOptional.get();
         assertEquals("testUser2", foundUser.getLogin());
     }
 }
