@@ -32,7 +32,7 @@ public class Course {
     private String description;
 
     @Column(nullable = false)
-    private Long price;
+    private Float rating;
 
     @Column(nullable = false)
     private Boolean isProgressLimited;

@@ -55,7 +55,7 @@ public class CourseServiceImpl implements CourseService {
             Course course = existingCourse.get();
             course.setName(courseDto.getName());
             course.setDescription(courseDto.getDescription());
-            course.setPrice(courseDto.getPrice());
+            course.setRating(courseDto.getRating());
             course.setIsProgressLimited(courseDto.getIsProgressLimited());
             course.setPicture_url(courseDto.getPicture_url());
             course.setCategory(CategoryMapper.INSTANCE.toEntity(courseDto.getCategory()));

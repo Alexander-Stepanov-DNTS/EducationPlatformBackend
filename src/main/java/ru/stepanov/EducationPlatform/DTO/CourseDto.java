@@ -7,7 +7,7 @@ public class CourseDto {
     private Long id;
     private String name;
     private String description;
-    private Long price;
+    private Float rating;
     private Boolean isProgressLimited;
     private String picture_url;
     private CategoryDto category;
